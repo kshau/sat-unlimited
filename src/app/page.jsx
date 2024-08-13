@@ -1,6 +1,6 @@
 "use client"
 
-import SelectPageHeader from "@/components/SelectPageHeader"
+import { SelectPageHeader } from "@/components/SelectPageHeader"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { BookOpenTextIcon, CalculatorIcon, ChevronLeftIcon, ChevronRightIcon, Clock4Icon, FileTextIcon } from "lucide-react"
@@ -82,7 +82,7 @@ export default function Home() {
   }
 
   const redirectToPlayPage = () => {
-    const qtypes = selectedQuestionsSubcats.join(",");
+    const qtypes = selectedQuestionsSubcats.join("%2C");
     location.href = `/play?qtypes=${qtypes}&method=${selectedStudyMethod}&methodval=${selectedStudyMethod == "time" ? selectedMinutes : selectedQuestionCount}`;
   }
 

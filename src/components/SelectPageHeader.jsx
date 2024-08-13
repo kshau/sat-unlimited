@@ -1,6 +1,6 @@
 "use client"
 
-export default function SelectPageHeader({subheader}) {
+export function SelectPageHeader({subheader}) {
 
     return (
         <div className="flex flex-col mt-24 items-center">
