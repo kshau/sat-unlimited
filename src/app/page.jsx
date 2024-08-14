@@ -53,25 +53,41 @@ const questionCategories = [
   }
 ]
 
+const limitIntegerToRange = (int, min, max) => {
+  
+  if (int < min) {
+    return min;
+  }
+
+  else if (int > max) {
+    return max;
+  }
+
+  return int;
+
+}
+
 export default function Home() {
 
   const [key, setKey] = useState(0);
   const [formPage, setFormPage] = useState(0);
 
-  const [selectedQuestionsSubcats, setSelectedQuestionsSubcats] = useState([]);
+  const [selectedQuestionSubcats, setSelectedQuestionSubcats] = useState([]);
   const [selectedStudyMethod, setSelectedStudyMethod] = useState(null);
 
   const [selectedMinutes, setSelectedMinutes] = useState(15);
   const [selectedQuestionCount, setSelectedQuestionCount] = useState(20);
 
+  localStorage.clear();
+
   const toggleSelectedSubcat = (subcatId) => {
     
-    if (selectedQuestionsSubcats.includes(subcatId)) {
-      setSelectedQuestionsSubcats(o => (o.filter(selectedSubcatId => (selectedSubcatId != subcatId))));
+    if (selectedQuestionSubcats.includes(subcatId)) {
+      setSelectedQuestionSubcats(o => (o.filter(selectedSubcatId => (selectedSubcatId != subcatId))));
     }
 
     else {
-      setSelectedQuestionsSubcats(o => [...o, subcatId]);
+      setSelectedQuestionSubcats(o => [...o, subcatId]);
     }
 
   }
@@ -82,8 +98,14 @@ export default function Home() {
   }
 
   const redirectToPlayPage = () => {
-    const qtypes = selectedQuestionsSubcats.join("%2C");
-    location.href = `/play?qtypes=${qtypes}&method=${selectedStudyMethod}&methodval=${selectedStudyMethod == "time" ? selectedMinutes : selectedQuestionCount}`;
+
+    localStorage.setItem("selectedStudyMethod", selectedStudyMethod);
+    localStorage.setItem("selectedQuestionSubcats", JSON.stringify(selectedQuestionSubcats));
+    localStorage.setItem("selectedMinutes", limitIntegerToRange(selectedMinutes, 1, 120));
+    localStorage.setItem("selectedQuestionCount", limitIntegerToRange(selectedQuestionCount, 5, 200));
+
+    location.href = "/play";
+
   }
 
   switch (formPage) {
@@ -107,7 +129,7 @@ export default function Home() {
                   </span>
                   <div className="flex flex-col mt-6 gap-y-4">
                     {category.subcats.map(subcat => (
-                      <Button variant="outline" className={`w-86 ${selectedQuestionsSubcats.includes(subcat.id) ? "bg-accent text-accent-foreground" : ""}`} onClick={() => {toggleSelectedSubcat(subcat.id)}}>
+                      <Button variant="outline" className={`w-86 ${selectedQuestionSubcats.includes(subcat.id) ? "bg-accent text-accent-foreground" : ""}`} onClick={() => {toggleSelectedSubcat(subcat.id)}}>
                         {subcat.name}
                       </Button>
                     ))}
@@ -118,7 +140,7 @@ export default function Home() {
     
             <div className="mt-10">
     
-              <Button className="w-fit float-right m-3" onClick={() => {changeFormPage(1)}} disabled={selectedQuestionsSubcats.length == 0}>
+              <Button className="w-fit float-right m-3" onClick={() => {changeFormPage(1)}} disabled={selectedQuestionSubcats.length == 0}>
                 <span>Next</span>
                 <ChevronRightIcon/>
               </Button>

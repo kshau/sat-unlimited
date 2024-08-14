@@ -3,7 +3,7 @@
 import { SmallHeader } from "@/components/SmallHeader"
 import { Button } from "@/components/ui/button"
 import axios from "axios"
-import { ChevronRightIcon, Clock4Icon } from "lucide-react"
+import { ChevronRightIcon, Clock4Icon, FileTextIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 
 export default function Play() {
@@ -20,12 +20,36 @@ export default function Play() {
     const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
     const [incorrectAnswersCount, setIncorrectAnswersCount] = useState(0);
 
+    const {selectedStudyMethod, selectedQuestionSubcats, selectedMinutes, selectedQuestionCount} = localStorage;
+
+    const [clockValue, setClockValue] = useState(selectedStudyMethod == "time" ? `${selectedMinutes}:00` : "0:00");
+
+    const [initialClockValue, setInitialClockValue] = useState(null);
+
+    const [answeredQuestions, setAnsweredQuestions] = useState([]);
+
     const getQuestion = async () => {
         const res = await axios.post("/api/getQuestion");
         setQuestion(res.data.question);
     }
 
+    const showResults = () => {
+        localStorage.setItem("results", JSON.stringify({
+            answeredQuestions, 
+            time: selectedMinutes == "time" ? initialClockValue : clockValue, 
+            correctAnswersCount, 
+            incorrectAnswersCount
+        }));
+        location.href = "/results";
+    }
+
     const nextQuestion = () => {
+
+        if (selectedStudyMethod == "questions" && questionNumber >= selectedQuestionCount) {
+            showResults();
+            return;
+        }
+
         setUserAnswer(null);
         setQuestionNumber(o => o + 1);
         window.scrollTo({"top": 0});
@@ -33,9 +57,46 @@ export default function Play() {
     }
 
     useEffect(() => {
+
         if (!question) {
             getQuestion();
         }
+
+        const timeStarted = Date.now();
+
+        if (selectedStudyMethod == "time") {
+            // Written by ChatGPT
+            const timerInterval = setInterval(() => {
+
+                const endTime = timeStarted + selectedMinutes * 60_000;
+                const timeDifference = endTime - Date.now();
+                const newTime = new Date(timeDifference);
+                const newClockValue = `${newTime.getMinutes()}:${newTime.getSeconds().toString().padStart(2, "0")}`;
+                setClockValue(newClockValue);
+
+                if (initialClockValue == null) {
+                    setInitialClockValue(newClockValue);
+                }
+
+                if (newTime.getMinutes() == 0 && newTime.getSeconds() == 0) {
+                    showResults();
+                }
+
+            }, 1000);
+        }
+
+        else {
+            // Written by ChatGPT
+            const stopwatchInterval = setInterval(() => {
+                const timeDifference = Date.now() - timeStarted;
+                const totalMinutes = Math.floor(timeDifference / 60_000);
+                const seconds = Math.floor((timeDifference % 60_000) / 1000);
+                const newClockValue = `${totalMinutes}:${seconds.toString().padStart(2, "0")}`;
+                setClockValue(newClockValue);
+
+            }, 1000);
+        }
+
     }, [])
 
     useEffect(() => {
@@ -46,6 +107,9 @@ export default function Play() {
             else {
                 setIncorrectAnswersCount(o => o + 1);
             }
+            const answeredQuestion = question;
+            answeredQuestion["userAnwerIndex"] = userAnswer;
+            setAnsweredQuestions(o => [...o, answeredQuestion]);
         }
     }, [userAnswer])
 
@@ -56,17 +120,17 @@ export default function Play() {
 
             <div className="flex flex-col self-center mt-36 max-w-[50rem] animate-fade-in">
 
-                <div className="flex flex-row font-bold gap-x-8">
+                <div className="flex flex-row font-bold gap-x-6">
                     <div className="flex flex-col my-auto">
-                        <span className="text-[#E7C654] text-4xl mr-8">Time-Based Practice</span>
+                        <span className="text-[#E7C654] text-3xl mr-8">{selectedStudyMethod == "time" ? "Time" : "Questions"}-Based Practice</span>
                         <div className="flex flex-row gap-x-2">
-                            <Clock4Icon className="my-auto" size={27} color="#FFF2C3"/>
-                            <span className="text-2xl font-normal text-[#FFF2C3]">15 minutes</span>
+                            {selectedStudyMethod == "time" ? <Clock4Icon className="my-auto" size={27} color="#FFF2C3"/> : <FileTextIcon className="my-auto" size={27} color="#FFF2C3"/>}
+                            <span className="text-2xl font-normal text-[#FFF2C3]">{selectedStudyMethod == "time" ? `${selectedMinutes} minutes` : `${selectedQuestionCount} questions`}</span>
                         </div>
                     </div>
                     <div className="flex flex-row gap-x-2 my-auto">
-                        <Clock4Icon size={37}/>
-                        <span className="text-4xl">6:05</span>
+                        <Clock4Icon size={33}/>
+                        <span className={`text-3xl ${selectedStudyMethod == "time" && clockValue.startsWith("0:") ? "text-[#C34646]" : ""}`}>{clockValue}</span>
                     </div>
                     <div className="flex flex-col items-center">
                         <span className="text-[#4BB268] text-4xl">{correctAnswersCount}</span>
