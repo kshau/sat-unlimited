@@ -70,7 +70,7 @@ export default function Results() {
                     <Accordion type="multiple" collapsible className="w-full">
                         {answeredQuestions.map((answeredQuestion, index) => (
                             <div className="flex flex-row">
-                                <AccordionItem value={`question-${index + 1}`}>
+                                <AccordionItem value={`question-${index + 1}`} className="w-full">
                                     <AccordionTrigger className="text-left">
                                         <span className="text-3xl font-bold mr-5">
                                             {index + 1}

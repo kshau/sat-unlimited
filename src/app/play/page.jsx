@@ -26,18 +26,10 @@ export default function Play() {
     const [answeredQuestions, setAnsweredQuestions] = useState([]);
 
     const getQuestion = async () => {
-        const res = await axios.post("/api/getQuestion", {selectedQuestionSubcats});
+        const res = await axios.post("/api/getQuestion", {
+            selectedQuestionSubcats: JSON.parse(selectedQuestionSubcats)
+        });
         setQuestion(res.data.question);
-    }
-
-    const showResults = () => {
-        localStorage.setItem("results", JSON.stringify({
-            answeredQuestions, 
-            time: selectedMinutes == "time" ? initialClockValue : clockValue, 
-            correctAnswersCount, 
-            incorrectAnswersCount
-        }));
-        location.href = "/results";
     }
 
     const nextQuestion = () => {
@@ -51,6 +43,17 @@ export default function Play() {
         setQuestionNumber(o => o + 1);
         window.scrollTo({"top": 0});
         getQuestion();
+
+    }
+
+    const showResults = () => {
+        localStorage.setItem("results", JSON.stringify({
+            answeredQuestions, 
+            time: selectedMinutes == "time" ? initialClockValue : clockValue, 
+            correctAnswersCount, 
+            incorrectAnswersCount
+        }));
+        location.href = "/results";
     }
 
     useEffect(() => {
@@ -77,6 +80,7 @@ export default function Play() {
 
                 if (newTime.getMinutes() == 0 && newTime.getSeconds() == 0) {
                     showResults();
+                    return;
                 }
 
             }, 1000);
@@ -122,7 +126,7 @@ export default function Play() {
 
             <div className="flex flex-col self-center mt-36 max-w-[50rem] animate-fade-in">
 
-                <div className="sticky top-10 bg-background">
+                <div>
 
                     <div className="flex flex-row font-bold gap-x-6">
                         <div className="flex flex-col my-auto">
