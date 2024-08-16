@@ -45,7 +45,7 @@ export default function Results() {
                         <span>/{answeredQuestions.length}</span>
                     </div>
 
-                    <span className="text-[#FFF2C3]">{Math.floor((correctAnswersCount/answeredQuestions.length)*100)}%</span>
+                    <span className="text-[#FFF2C3]">{Math.floor((correctAnswersCount/answeredQuestions.length)*100) || 0}%</span>
 
                 </div>
 
@@ -66,7 +66,7 @@ export default function Results() {
                     </div>
                 </div>
 
-                <div className="max-w-[50rem] m-20">
+                <div className="w-[50rem] m-20">
                     <Accordion type="multiple" collapsible className="w-full">
                         {answeredQuestions.map((answeredQuestion, index) => (
                             <div className="flex flex-row">
@@ -80,7 +80,9 @@ export default function Results() {
                                         </span>
                                     </AccordionTrigger>
                                     <AccordionContent className="w-[90%] ml-[3rem]">
-                                        {answeredQuestion.passage}
+                                        <span className="text-lg">
+                                            {answeredQuestion.passage}
+                                        </span>
                                         <div className="flex flex-col gap-y-2 mt-5">
                                             {answeredQuestion.answerChoices.map((answerChoice, index) => (
                                                 <Button variant="outline" size="h-adapt" className={`w-full py-4 ${

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { indexToLetter } from "@/lib/utils"
 import axios from "axios"
 import { ChevronRightIcon, Clock4Icon, FileTextIcon } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 export default function Play() {
 
@@ -17,6 +17,9 @@ export default function Play() {
     const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
     const [incorrectAnswersCount, setIncorrectAnswersCount] = useState(0);
 
+    const correctAnswersCountRef = useRef(correctAnswersCount);
+    const incorrectAnswersCountRef = useRef(incorrectAnswersCount);
+
     const {selectedStudyMethod, selectedQuestionSubcats, selectedMinutes, selectedQuestionCount} = localStorage;
 
     const [clockValue, setClockValue] = useState(selectedStudyMethod == "time" ? `${selectedMinutes}:00` : "0:00");
@@ -24,6 +27,8 @@ export default function Play() {
     const [initialClockValue, setInitialClockValue] = useState(null);
 
     const [answeredQuestions, setAnsweredQuestions] = useState([]);
+
+    const answeredQuestionsRef = useRef(answeredQuestions);
 
     const getQuestion = async () => {
         const res = await axios.post("/api/getQuestion", {
@@ -48,19 +53,15 @@ export default function Play() {
 
     const showResults = () => {
         localStorage.setItem("results", JSON.stringify({
-            answeredQuestions, 
+            answeredQuestions: answeredQuestionsRef.current, 
             time: selectedMinutes == "time" ? initialClockValue : clockValue, 
-            correctAnswersCount, 
-            incorrectAnswersCount
+            correctAnswersCount: correctAnswersCountRef.current, 
+            incorrectAnswersCount: incorrectAnswersCountRef.current
         }));
         location.href = "/results";
     }
 
-    useEffect(() => {
-
-        if (!question) {
-            getQuestion();
-        }
+    const startClock = () => {
 
         const timeStarted = Date.now();
 
@@ -72,6 +73,7 @@ export default function Play() {
                 const timeDifference = endTime - Date.now();
                 const newTime = new Date(timeDifference);
                 const newClockValue = `${newTime.getMinutes()}:${newTime.getSeconds().toString().padStart(2, "0")}`;
+                
                 setClockValue(newClockValue);
 
                 if (initialClockValue == null) {
@@ -97,8 +99,26 @@ export default function Play() {
 
             }, 1000);
         }
+    }
+
+    useEffect(() => {
+
+        if (!question) {
+            getQuestion();
+        }
+
+        startClock();
 
     }, [])
+
+    useEffect(() => {
+        correctAnswersCountRef.current = correctAnswersCount;
+        incorrectAnswersCountRef.current = incorrectAnswersCount;
+        answeredQuestionsRef.current = answeredQuestions;
+    }, [correctAnswersCount, 
+        incorrectAnswersCount, 
+        answeredQuestions
+    ])
 
     useEffect(() => {
         if (userAnswer != null) {

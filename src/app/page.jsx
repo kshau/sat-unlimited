@@ -176,7 +176,7 @@ export default function Home() {
                   Time-Based
                 </span>
                 <div className="flex flex-row mt-6 gap-x-4">
-                  <Input type="number" min={5} max={120} step={1} className="w-20" defaultValue={selectedMinutes} onChange={(event) => {setSelectedMinutes(event.target.value)}}/>
+                  <Input type="number" min={1} max={120} step={1} className="w-20" defaultValue={selectedMinutes} onChange={(event) => {setSelectedMinutes(event.target.value)}}/>
                   <span className="my-auto text-2xl">Minutes</span>
                 </div>
                 <Button variant="outline" className={`mt-8 ${selectedStudyMethod == "time" ? "bg-accent text-accent-foreground" : ""}`} onClick={() => {setSelectedStudyMethod("time")}}>
