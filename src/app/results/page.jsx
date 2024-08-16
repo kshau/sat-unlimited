@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/accordion"
 import { indexToLetter } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Footer } from "@/components/Footer";
 
 export default function Results() {
 
@@ -120,6 +121,8 @@ export default function Results() {
                 </div>
 
             </div>
+
+            <Footer/>
 
         </div>
     )

@@ -1,5 +1,6 @@
 "use client"
 
+import { Footer } from "@/components/Footer"
 import { SelectPageHeader } from "@/components/SelectPageHeader"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -151,6 +152,8 @@ export default function Home() {
             </div>
     
           </div>
+
+          <Footer/>
     
         </div>
     
@@ -209,6 +212,8 @@ export default function Home() {
             </div>
     
           </div>
+
+          <Footer/>
     
         </div>
     

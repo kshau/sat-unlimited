@@ -1,5 +1,6 @@
 "use client"
 
+import { Footer } from "@/components/Footer"
 import { SmallHeader } from "@/components/SmallHeader"
 import { Button } from "@/components/ui/button"
 import { indexToLetter } from "@/lib/utils"
@@ -209,6 +210,8 @@ export default function Play() {
                 }
 
             </div>
+
+            <Footer/>
 
         </div>
     )
