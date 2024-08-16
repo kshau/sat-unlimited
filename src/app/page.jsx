@@ -54,16 +54,18 @@ const questionCategories = [
 ]
 
 const limitIntegerToRange = (int, min, max) => {
+
+  var newInt = int;
   
   if (int < min) {
-    return min;
+    newInt = min;
   }
 
   else if (int > max) {
-    return max;
+    newInt = max;
   }
 
-  return int;
+  return parseInt(newInt);
 
 }
 
@@ -94,7 +96,8 @@ export default function Home() {
 
   const changeFormPage = (value) => {
     setFormPage(o => o + value);
-    setKey(o => o + 1)
+    setKey(o => o + 1);
+    window.scrollTo({"top": 0});
   }
 
   const redirectToPlayPage = () => {

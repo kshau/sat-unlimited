@@ -2,16 +2,12 @@
 
 import { SmallHeader } from "@/components/SmallHeader"
 import { Button } from "@/components/ui/button"
+import { indexToLetter } from "@/lib/utils"
 import axios from "axios"
 import { ChevronRightIcon, Clock4Icon, FileTextIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 
 export default function Play() {
-
-    const indexToLetter = (index) => {
-        const alphabet = Array.from("abcdefghijklmnopqrstuvwxyz");
-        return alphabet[index];
-    }
 
     const [question, setQuestion] = useState(null);
     const [userAnswer, setUserAnswer] = useState(null);
@@ -29,7 +25,7 @@ export default function Play() {
     const [answeredQuestions, setAnsweredQuestions] = useState([]);
 
     const getQuestion = async () => {
-        const res = await axios.post("/api/getQuestion");
+        const res = await axios.post("/api/getQuestion", {selectedQuestionSubcats});
         setQuestion(res.data.question);
     }
 
@@ -108,10 +104,15 @@ export default function Play() {
                 setIncorrectAnswersCount(o => o + 1);
             }
             const answeredQuestion = question;
-            answeredQuestion["userAnwerIndex"] = userAnswer;
+            answeredQuestion["userAnswerIndex"] = userAnswer;
             setAnsweredQuestions(o => [...o, answeredQuestion]);
         }
     }, [userAnswer])
+
+    if (!selectedStudyMethod) {
+        location.href = "/";
+        return;
+    }
 
     return (
         <div className="flex flex-col">
@@ -120,37 +121,41 @@ export default function Play() {
 
             <div className="flex flex-col self-center mt-36 max-w-[50rem] animate-fade-in">
 
-                <div className="flex flex-row font-bold gap-x-6">
-                    <div className="flex flex-col my-auto">
-                        <span className="text-[#E7C654] text-3xl mr-8">{selectedStudyMethod == "time" ? "Time" : "Questions"}-Based Practice</span>
-                        <div className="flex flex-row gap-x-2">
-                            {selectedStudyMethod == "time" ? <Clock4Icon className="my-auto" size={27} color="#FFF2C3"/> : <FileTextIcon className="my-auto" size={27} color="#FFF2C3"/>}
-                            <span className="text-2xl font-normal text-[#FFF2C3]">{selectedStudyMethod == "time" ? `${selectedMinutes} minutes` : `${selectedQuestionCount} questions`}</span>
+                <div className="sticky top-10 bg-background">
+
+                    <div className="flex flex-row font-bold gap-x-6">
+                        <div className="flex flex-col my-auto">
+                            <span className="text-[#E7C654] text-3xl mr-8">{selectedStudyMethod == "time" ? "Time" : "Questions"}-Based Practice</span>
+                            <div className="flex flex-row gap-x-2">
+                                {selectedStudyMethod == "time" ? <Clock4Icon className="my-auto" size={27} color="#FFF2C3"/> : <FileTextIcon className="my-auto" size={27} color="#FFF2C3"/>}
+                                <span className="text-2xl font-normal text-[#FFF2C3]">{selectedStudyMethod == "time" ? `${selectedMinutes} minutes` : `${selectedQuestionCount} questions`}</span>
+                            </div>
+                        </div>
+                        <div className="flex flex-row gap-x-2 my-auto">
+                            <Clock4Icon size={33}/>
+                            <span className={`text-3xl ${selectedStudyMethod == "time" && clockValue.startsWith("0:") ? "text-[#C34646]" : ""}`}>{clockValue}</span>
+                        </div>
+                        <div className="flex flex-col items-center">
+                            <span className="text-[#4BB268] text-4xl">{correctAnswersCount}</span>
+                            <span className="text-xl">Correct</span>
+                        </div>
+                        <div className="flex flex-col items-center">
+                            <span className="text-[#C34646] text-4xl">{incorrectAnswersCount}</span>
+                            <span className="text-xl">Incorrect</span>
                         </div>
                     </div>
-                    <div className="flex flex-row gap-x-2 my-auto">
-                        <Clock4Icon size={33}/>
-                        <span className={`text-3xl ${selectedStudyMethod == "time" && clockValue.startsWith("0:") ? "text-[#C34646]" : ""}`}>{clockValue}</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <span className="text-[#4BB268] text-4xl">{correctAnswersCount}</span>
-                        <span className="text-xl">Correct</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <span className="text-[#C34646] text-4xl">{incorrectAnswersCount}</span>
-                        <span className="text-xl">Incorrect</span>
-                    </div>
-                </div>
 
-                <div className="w-full h-10 rounded-sm bg-[#0F0017] mt-6">
-                    <div className="flex bg-[#1B002B] h-full w-fit rounded-l-sm">
-                        <span className="text-2xl my-auto mx-2">{questionNumber}</span>
+                    <div className="w-full h-10 rounded-sm bg-[#0F0017] mt-6">
+                        <div className="flex bg-[#1B002B] h-full w-fit rounded-l-sm">
+                            <span className="text-2xl my-auto mx-2">{questionNumber}</span>
+                        </div>
                     </div>
+
                 </div>
 
                 {(question) ? 
                 
-                    <div className="animate-fade-in">
+                    <div className="animate-fade-in" key={questionNumber}>
 
                         <div className="flex flex-col gap-y-5 mt-4 text-xl">
                             <span>
