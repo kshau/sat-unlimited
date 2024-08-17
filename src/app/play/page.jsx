@@ -193,7 +193,7 @@ export default function Play() {
 
                         <div className="flex flex-col mt-5 gap-y-4">
                             {question.answerChoices.map((answerChoice, index) => (
-                                <Button variant="outline" size="h-adapt" className={`w-full py-4 ${
+                                <Button key={index} variant="outline" size="h-adapt" className={`w-full py-4 ${
                                     (() => {
                                         if (question.correctAnswerIndex == index && userAnswer != null) {
                                             return "bg-[#4BB268]";

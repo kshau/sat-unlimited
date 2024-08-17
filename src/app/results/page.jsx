@@ -69,7 +69,7 @@ export default function Results() {
                 <div className="w-[50rem] m-20">
                     <Accordion type="multiple" collapsible className="w-full">
                         {answeredQuestions.map((answeredQuestion, index) => (
-                            <div className="flex flex-row">
+                            <div className="flex flex-row" key={index}>
                                 <AccordionItem value={`question-${index + 1}`} className="w-full">
                                     <AccordionTrigger className="text-left">
                                         <span className="text-3xl font-bold mr-5">
@@ -85,7 +85,7 @@ export default function Results() {
                                         </span>
                                         <div className="flex flex-col gap-y-2 mt-5">
                                             {answeredQuestion.answerChoices.map((answerChoice, index) => (
-                                                <Button variant="outline" size="h-adapt" className={`w-full py-4 ${
+                                                <Button key={index} variant="outline" size="h-adapt" className={`w-full py-4 ${
                                                     (() => {
                                                         if (answeredQuestion.correctAnswerIndex == index) {
                                                             return "bg-[#4BB268]";
