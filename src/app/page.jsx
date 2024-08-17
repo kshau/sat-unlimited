@@ -7,53 +7,6 @@ import { Input } from "@/components/ui/input"
 import { BookOpenTextIcon, CalculatorIcon, ChevronLeftIcon, ChevronRightIcon, Clock4Icon, FileTextIcon } from "lucide-react"
 import { useState } from "react"
 
-const questionCategories = [
-  {
-    "name": "Reading and Writing", 
-    "iconElem": <BookOpenTextIcon size={60}/>,
-    "subcats": [
-      {
-        "name": "Information and Ideas", 
-        "id": "info_and_ideas"
-      }, 
-      {
-        "name": "Craft and Structure", 
-        "id": "craft_and_structure"
-      }, 
-      {
-        "name": "Expression of Ideas", 
-        "id": "expression_of_ideas"
-      }, 
-      {
-        "name": "Standard English Conventions", 
-        "id": "standard_english_conventions"
-      }
-    ]
-  }, 
-  {
-    "name": "Math", 
-    "iconElem": <CalculatorIcon size={60}/>,
-    "subcats": [
-      {
-        "name": "Algebra", 
-        "id": "algebra"
-      }, 
-      {
-        "name": "Advanced Math", 
-        "id": "advanced_math"
-      }, 
-      {
-        "name": "Problem-Solving and Data Analysis", 
-        "id": "problem_solving_and_data_analysis"
-      }, 
-      {
-        "name": "Geometry and Trigonometry", 
-        "id": "geometry_and_trigonometry"
-      }
-    ]
-  }
-]
-
 const limitIntegerToRange = (int, min, max) => {
 
   var newInt = int;
@@ -125,21 +78,24 @@ export default function Home() {
           <div className="flex flex-col w-fit self-center">
     
             <div className="flex flex-wrap self-center mt-20 gap-x-36 gap-y-12 justify-center">
-              {questionCategories.map(category => (
-                <div className="flex flex-col items-center w-96 ">
-                  {category.iconElem}
-                  <span className="text-3xl font-bold mt-2">
-                    {category.name}
-                  </span>
-                  <div className="flex flex-col mt-6 gap-y-4">
-                    {category.subcats.map(subcat => (
-                      <Button variant="outline" className={`w-86 ${selectedQuestionSubcats.includes(subcat.id) ? "bg-accent text-accent-foreground" : ""}`} onClick={() => {toggleSelectedSubcat(subcat.id)}}>
-                        {subcat.name}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-              ))}
+              <div className="flex flex-col items-center w-96 ">
+                <BookOpenTextIcon size={60}/>
+                <span className="text-3xl font-bold mt-2">
+                  Reading and Writing
+                </span>
+                <Button variant="outline" className={`mt-8 ${selectedQuestionSubcats.includes("reading_and_writing") ? "bg-accent text-accent-foreground" : ""}`} onClick={() => {toggleSelectedSubcat("reading_and_writing")}}>
+                  {selectedQuestionSubcats.includes("reading_and_writing") ? "Selected" : "Select"}
+                </Button>
+              </div>
+              <div className="flex flex-col items-center w-96 ">
+                <CalculatorIcon size={60}/>
+                <span className="text-3xl font-bold mt-2">
+                  Math
+                </span>
+                <Button variant="outline" className={`mt-8 ${selectedQuestionSubcats.includes("math") ? "bg-accent text-accent-foreground" : ""}`} onClick={() => {toggleSelectedSubcat("math")}}>
+                  {selectedQuestionSubcats.includes("math") ? "Selected" : "Select"}
+                </Button>
+              </div>
             </div>
     
             <div className="mt-10">
