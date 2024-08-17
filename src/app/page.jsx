@@ -96,7 +96,7 @@ export default function Home() {
                 </span>
                 <Button variant="outline" className={`mt-8 flex ${selectedQuestionSubcats.includes("math") ? "bg-accent text-accent-foreground" : ""}`} onClick={() => {toggleSelectedSubcat("math")}} disabled>
                   {/* {selectedQuestionSubcats.includes("math") ? "Selected" : "Select"} */}
-                  Availible soon
+                  Available soon
                 </Button>
               </div>
             </div>
