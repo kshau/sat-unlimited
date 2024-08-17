@@ -1,7 +1,7 @@
 "use client"
 
 import { SmallHeader } from "@/components/SmallHeader";
-import { CheckIcon, Clock4Icon, XIcon } from "lucide-react";
+import { CheckIcon, Clock4Icon, RefreshCwIcon, XIcon } from "lucide-react";
 
 import {
     Accordion,
@@ -13,26 +13,28 @@ import { indexToLetter } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function Results() {
 
-    const [resultsData, setResultsData] = useState(null);
+    const {results} = localStorage;
 
     useEffect(() => {
-
-        const {results} = localStorage;
 
         if (!results) {
             location.href = "/";
         }
 
-        setResultsData(JSON.parse(results));
-
     })
 
-    if (!resultsData) {
-        return <></>
+    if (typeof localStorage === "undefined" || !localStorage.selectedStudyMethod) {
+        if (typeof window !== "undefined") {
+            location.href = "/";
+        }
+        return <></>;
     }
+
+    const {answeredQuestions, correctAnswersCount, incorrectAnswersCount, time} = JSON.parse(results);
 
     return (
         <div className="flex flex-col">
@@ -46,11 +48,11 @@ export default function Results() {
                 <div className="flex flex-row text-7xl gap-x-20">
 
                     <div className="font-bold">
-                        <span className="text-[#4BB268]">{resultsData.correctAnswersCount}</span>
-                        <span>/{resultsData.answeredQuestions.length}</span>
+                        <span className="text-[#4BB268]">{correctAnswersCount}</span>
+                        <span>/{answeredQuestions.length}</span>
                     </div>
 
-                    <span className="text-[#FFF2C3]">{Math.floor((resultsData.correctAnswersCount/resultsData.answeredQuestions.length)*100) || 0}%</span>
+                    <span className="text-[#FFF2C3]">{Math.floor((correctAnswersCount/answeredQuestions.length)*100) || 0}%</span>
 
                 </div>
 
@@ -58,22 +60,22 @@ export default function Results() {
                     <div className="flex flex-row font-bold gap-x-10">
                         <div className="flex flex-row gap-x-2 my-auto">
                             <Clock4Icon size={50}/>
-                            <span className="text-5xl">{resultsData.time}</span>
+                            <span className="text-5xl">{time}</span>
                         </div>
                         <div className="flex flex-col items-center">
-                            <span className="text-[#4BB268] text-5xl">{resultsData.correctAnswersCount}</span>
+                            <span className="text-[#4BB268] text-5xl">{correctAnswersCount}</span>
                             <span className="text-xl">Correct</span>
                         </div>
                         <div className="flex flex-col items-center">
-                            <span className="text-[#C34646] text-5xl">{resultsData.incorrectAnswersCount}</span>
+                            <span className="text-[#C34646] text-5xl">{incorrectAnswersCount}</span>
                             <span className="text-xl">Incorrect</span>
                         </div>
                     </div>
                 </div>
 
-                <div className="w-[50rem] m-20">
+                <div className="w-[50rem] m-20 flex flex-col">
                     <Accordion type="multiple" collapsible className="w-full">
-                        {resultsData.answeredQuestions.map((answeredQuestion, index) => (
+                        {answeredQuestions.map((answeredQuestion, index) => (
                             <div className="flex flex-row" key={index}>
                                 <AccordionItem value={`question-${index + 1}`} className="w-full">
                                     <AccordionTrigger className="text-left">
@@ -125,6 +127,14 @@ export default function Results() {
                             </div>
                         ))}
                     </Accordion>
+                    <Link href="/" className="self-center mt-16">
+                        <Button className="gap-x-2 flex">
+                            <RefreshCwIcon/>
+                            <span>
+                                Play again
+                            </span>
+                        </Button>
+                    </Link>
                 </div>
 
             </div>
