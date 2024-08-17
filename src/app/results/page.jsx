@@ -2,6 +2,7 @@
 
 import { SmallHeader } from "@/components/SmallHeader";
 import { CheckIcon, Clock4Icon, RefreshCwIcon, XIcon } from "lucide-react";
+import dynamic from "next/dynamic";
 
 import {
     Accordion,
@@ -15,9 +16,7 @@ import { Footer } from "@/components/Footer";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-export default function Results() {
-
-    const {results} = localStorage;
+function Results() {
 
     useEffect(() => {
 
@@ -33,6 +32,8 @@ export default function Results() {
         }
         return <></>;
     }
+
+    const {results} = localStorage;
 
     const {answeredQuestions, correctAnswersCount, incorrectAnswersCount, time} = JSON.parse(results);
 
@@ -144,3 +145,5 @@ export default function Results() {
         </div>
     )
 }
+
+export default dynamic (() => Promise.resolve(Results), {ssr: false})
