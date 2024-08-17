@@ -12,22 +12,27 @@ import {
 import { indexToLetter } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
+import { useEffect, useState } from "react";
 
 export default function Results() {
 
-    const {results} = localStorage;
+    const [resultsData, setResultsData] = useState(null);
 
-    if (!results) {
-        location.href = "/";
-        return;
+    useEffect(() => {
+
+        const {results} = localStorage;
+
+        if (!results) {
+            location.href = "/";
+        }
+
+        setResultsData(JSON.parse(results));
+
+    })
+
+    if (!resultsData) {
+        return <></>
     }
-
-    const {
-        answeredQuestions, 
-        time, 
-        correctAnswersCount, 
-        incorrectAnswersCount
-    } = JSON.parse(results);
 
     return (
         <div className="flex flex-col">
@@ -41,11 +46,11 @@ export default function Results() {
                 <div className="flex flex-row text-7xl gap-x-20">
 
                     <div className="font-bold">
-                        <span className="text-[#4BB268]">{correctAnswersCount}</span>
-                        <span>/{answeredQuestions.length}</span>
+                        <span className="text-[#4BB268]">{resultsData.correctAnswersCount}</span>
+                        <span>/{resultsData.answeredQuestions.length}</span>
                     </div>
 
-                    <span className="text-[#FFF2C3]">{Math.floor((correctAnswersCount/answeredQuestions.length)*100) || 0}%</span>
+                    <span className="text-[#FFF2C3]">{Math.floor((resultsData.correctAnswersCount/resultsData.answeredQuestions.length)*100) || 0}%</span>
 
                 </div>
 
@@ -53,14 +58,14 @@ export default function Results() {
                     <div className="flex flex-row font-bold gap-x-10">
                         <div className="flex flex-row gap-x-2 my-auto">
                             <Clock4Icon size={50}/>
-                            <span className="text-5xl">{time}</span>
+                            <span className="text-5xl">{resultsData.time}</span>
                         </div>
                         <div className="flex flex-col items-center">
-                            <span className="text-[#4BB268] text-5xl">{correctAnswersCount}</span>
+                            <span className="text-[#4BB268] text-5xl">{resultsData.correctAnswersCount}</span>
                             <span className="text-xl">Correct</span>
                         </div>
                         <div className="flex flex-col items-center">
-                            <span className="text-[#C34646] text-5xl">{incorrectAnswersCount}</span>
+                            <span className="text-[#C34646] text-5xl">{resultsData.incorrectAnswersCount}</span>
                             <span className="text-xl">Incorrect</span>
                         </div>
                     </div>
@@ -68,7 +73,7 @@ export default function Results() {
 
                 <div className="w-[50rem] m-20">
                     <Accordion type="multiple" collapsible className="w-full">
-                        {answeredQuestions.map((answeredQuestion, index) => (
+                        {resultsData.answeredQuestions.map((answeredQuestion, index) => (
                             <div className="flex flex-row" key={index}>
                                 <AccordionItem value={`question-${index + 1}`} className="w-full">
                                     <AccordionTrigger className="text-left">

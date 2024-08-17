@@ -10,6 +10,10 @@ import { useEffect, useRef, useState } from "react"
 
 export default function Play() {
 
+    if (typeof localStorage == "undefined") {
+        return <></>
+    }
+
     const [question, setQuestion] = useState(null);
     const [userAnswer, setUserAnswer] = useState(null);
     const [questionNumber, setQuestionNumber] = useState(1);
@@ -136,7 +140,7 @@ export default function Play() {
 
     if (!selectedStudyMethod) {
         location.href = "/";
-        return;
+        return <></>;
     }
 
     return (

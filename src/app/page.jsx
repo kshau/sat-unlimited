@@ -5,7 +5,7 @@ import { SelectPageHeader } from "@/components/SelectPageHeader"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { BookOpenTextIcon, CalculatorIcon, ChevronLeftIcon, ChevronRightIcon, Clock4Icon, FileTextIcon } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 const limitIntegerToRange = (int, min, max) => {
 
@@ -33,8 +33,6 @@ export default function Home() {
 
   const [selectedMinutes, setSelectedMinutes] = useState(15);
   const [selectedQuestionCount, setSelectedQuestionCount] = useState(20);
-
-  localStorage.clear();
 
   const toggleSelectedSubcat = (subcatId) => {
     
@@ -64,6 +62,10 @@ export default function Home() {
     location.href = "/play";
 
   }
+
+  useEffect(() => {
+    localStorage.clear();
+  })
 
   switch (formPage) {
 
