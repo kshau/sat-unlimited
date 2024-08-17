@@ -7,8 +7,10 @@ import { indexToLetter } from "@/lib/utils"
 import axios from "axios"
 import { ChevronRightIcon, Clock4Icon, FileTextIcon } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
+import dynamic from "next/dynamic";
 
-export default function Play() {
+
+function Play() {
 
     if (typeof localStorage == "undefined") {
         return <></>
@@ -26,7 +28,7 @@ export default function Play() {
 
     const {selectedStudyMethod, selectedQuestionSubcats, selectedMinutes, selectedQuestionCount} = localStorage;
 
-    const [clockValue, setClockValue] = useState(selectedStudyMethod == "time" ? `${selectedMinutes}:00` : "0:00");
+    const [clockValue, setClockValue] = useState("");
 
     const [initialClockValue, setInitialClockValue] = useState(null);
 
@@ -245,3 +247,5 @@ export default function Play() {
     )
 
 }
+
+export default dynamic (() => Promise.resolve(Play), {ssr: false})
