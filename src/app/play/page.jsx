@@ -12,10 +12,6 @@ import dynamic from "next/dynamic";
 
 function Play() {
 
-    if (typeof localStorage == "undefined") {
-        return <></>
-    }
-
     const [question, setQuestion] = useState(null);
     const [userAnswer, setUserAnswer] = useState(null);
     const [questionNumber, setQuestionNumber] = useState(1);
@@ -35,6 +31,13 @@ function Play() {
     const [answeredQuestions, setAnsweredQuestions] = useState([]);
 
     const answeredQuestionsRef = useRef(answeredQuestions);
+
+    if (typeof localStorage === "undefined" || !localStorage.selectedStudyMethod) {
+        if (typeof window !== "undefined") {
+            location.href = "/";
+        }
+        return <></>;
+    }
 
     const getQuestion = async () => {
         const res = await axios.post("/api/getQuestion", {
