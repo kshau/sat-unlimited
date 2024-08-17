@@ -32,13 +32,6 @@ function Play() {
 
     const answeredQuestionsRef = useRef(answeredQuestions);
 
-    if (typeof localStorage === "undefined" || !localStorage.selectedStudyMethod) {
-        if (typeof window !== "undefined") {
-            location.href = "/";
-        }
-        return <></>;
-    }
-
     const getQuestion = async () => {
         const res = await axios.post("/api/getQuestion", {
             selectedQuestionSubcats: JSON.parse(selectedQuestionSubcats)
@@ -142,6 +135,13 @@ function Play() {
             setAnsweredQuestions(o => [...o, answeredQuestion]);
         }
     }, [userAnswer])
+
+    if (typeof localStorage === "undefined" || !localStorage.selectedStudyMethod) {
+        if (typeof window !== "undefined") {
+            location.href = "/";
+        }
+        return <></>;
+    }
 
     if (!selectedStudyMethod) {
         location.href = "/";
