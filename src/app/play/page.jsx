@@ -192,7 +192,7 @@ function Play() {
                     <div className="animate-fade-in" key={questionNumber}>
 
                         <div className="flex flex-col gap-y-5 mt-4 text-xl">
-                            <span>
+                            <span className="whitespace-pre-wrap">
                                 {question.passage}
                             </span>
                             <span>
